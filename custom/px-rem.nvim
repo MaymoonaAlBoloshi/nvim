@@ -1,0 +1,23 @@
+local M = {}
+
+function M.convert_px_to_rem()
+    -- Get the word under the cursor
+    local word = vim.fn.expand('<cword>')
+
+    -- Check if the word ends with 'px'
+    if string.match(word, '%d+px$') then
+        -- Extract the number from '123px'
+        local number = tonumber(string.match(word, '(%d+)px'))
+        -- Calculate the rem value assuming a base font size of 16px
+        local base = 16
+        local rem_value = number / base .. 'rem'
+        -- Replace the word under the cursor
+        vim.api.nvim_command('normal ciw' .. rem_value)
+    else
+        print("No 'px' value under cursor")
+    end
+end
+
+-- Map the function to a keybind, for example, <leader>cr
+
+return M
