@@ -1,0 +1,40 @@
+# Functional component snippet with type
+snippet rfc "React Functional Component" b
+import React from 'react';
+
+interface ${1:ComponentName}Props {
+    ${2}
+}
+
+const ${1:ComponentName}: React.FC<${1:ComponentName}Props> = (props) => {
+    return (
+        <div>
+            ${3}
+        </div>
+    );
+};
+
+export default ${1:ComponentName};
+endsnippet
+
+# Use state snippet
+snippet us "Use State" b
+const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = React.useState<${2:Type}>(${3:initialState});
+endsnippet
+
+# Use effect snippet
+snippet ue "Use Effect" b
+React.useEffect(() => {
+    ${1}
+}, [${2}]);
+endsnippet
+
+# Console log with color
+snippet clc "Console log with color" b
+console.log('%c${1:variableName}:', 'color: ${2:color}; font-weight: bold;', ${1:variableName});
+endsnippet
+
+# Console log multiple variables with colors
+snippet clm "Console log multiple variables with colors" b
+console.log('%c${1:var1Name}: %c${2:var2Name}: %c${3:var3Name}:', 'color: ${4:color1}; font-weight: bold;', ${1:var1Name}, 'color: ${5:color2}; font-weight: bold;', ${2:var2Name}, 'color: ${6:color3}; font-weight: bold;', ${3:var3Name});
+endsnippet
