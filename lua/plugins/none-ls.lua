@@ -8,7 +8,6 @@ return {
         null_ls.setup({
             sources = {
                 null_ls.builtins.diagnostics.erb_lint,
-                null_ls.builtins.diagnostics.ruff,
                 null_ls.builtins.formatting.stylua,
                 null_ls.builtins.diagnostics.eslint,
                 null_ls.builtins.completion.spell,
