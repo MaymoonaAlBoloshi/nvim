@@ -2,6 +2,10 @@
 vim.g.mapleader = " "
 vim.keymap.set("i", "jk", "<ESC>")
 
+-- disable control z to avoid suspending neovim
+vim.keymap.set("n", "<C-z>", "<Nop>", { noremap = true })
+
+
 -- quality of life
 vim.keymap.set("n", "<leader>p", '"0p', { desc = "Paste without yanking" })  -- paste without yanking
 vim.keymap.set("n", "<leader>d", '"_d', { desc = "Delete without yanking" }) -- delete without yanking

@@ -1,5 +1,8 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
+-- disable ctrl+z
+vim.api.nvim_set_keymap("t", "<C-z>", "<Nop>", { noremap = true })
+
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
         "git",
