@@ -3,6 +3,7 @@ local cmp = require("cmp")
 -- Ensure cmp-copilot is required and setup is invoked
 require("copilot_cmp").setup()
 
+
 return {
 	"hrsh7th/nvim-cmp",
 	opts = {

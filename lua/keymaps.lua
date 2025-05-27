@@ -2,9 +2,15 @@
 vim.g.mapleader = " "
 vim.keymap.set("i", "jk", "<ESC>")
 
--- disable control z to avoid suspending neovim
-vim.keymap.set("n", "<C-z>", "<Nop>", { noremap = true })
+-- my custom pomodoro timer --
+vim.keymap.set("n", "<leader>ps", function() require("utils.pomodoro").start() end, { desc = "Start Pomodoro" })
+vim.keymap.set("n", "<leader>pe", function() require("utils.pomodoro").stop() end, { desc = "Stop Pomodoro" })
+vim.keymap.set("n", "<leader>pr", function() require("utils.pomodoro").reset() end, { desc = "Reset Pomodoro" })
+vim.keymap.set("n", "<leader>pc", function() require("utils.pomodoro").configure() end, { desc = "Configure Pomodoro" })
+-- end of custom pomodoro
 
+-- disable control z to avoid suspending neovim
+vim.keymap.set("t", "<C-z>", "<Nop>", { noremap = true })
 
 -- quality of life
 vim.keymap.set("n", "<leader>p", '"0p', { desc = "Paste without yanking" })  -- paste without yanking
