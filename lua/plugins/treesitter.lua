@@ -2,6 +2,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		config = function()
+			require("nvim-ts-autotag").setup()
 			local config = require("nvim-treesitter.configs")
 			config.setup({
 				ensure_installed = {
@@ -18,9 +19,6 @@ return {
 				},
 				auto_install = true,
 				highlight = {
-					enable = true,
-				},
-				autotag = {
 					enable = true,
 				},
 				incremental_selection = {

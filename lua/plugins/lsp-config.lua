@@ -30,7 +30,13 @@ return {
 
 			-- Updated tsserver setup
 			lspconfig.tsserver.setup({
-                capabilities = capabilities,
+				-- Ensure that tsserver only starts once per project by setting root_dir
+				root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+				capabilities = capabilities,
+				on_attach = function(client)
+					-- Disable formatting in tsserver if you're using another formatter (e.g., Prettier)
+					client.server_capabilities.documentFormattingProvider = false
+				end,
 			})
 
 			lspconfig.html.setup({
