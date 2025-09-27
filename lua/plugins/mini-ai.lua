@@ -26,38 +26,34 @@ return {
 						"^().*()$",
 					},
 					u = ai.gen_spec.function_call(),
-					U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }),
+					U = ai.gen_spec.function_call({ name_pattern = "[%w_]+" }), -- match full names
 				},
 			}
 		end,
 		config = function(_, opts)
 			require("mini.ai").setup(opts)
 
-			-- Register descriptions with which-key if installed
+			-- which-key (v3 spec) descriptions for mini.ai textobjects
 			local ok, wk = pcall(require, "which-key")
 			if ok then
-				wk.register({
+				wk.add({
 					mode = { "o", "x" },
-					a = {
-						o = "Around block/cond/loop",
-						f = "Around function",
-						c = "Around class",
-						t = "Around tag",
-						d = "Around digit",
-						e = "Around word (case)",
-						u = "Around function arg",
-						U = "Around function arg (strict)",
-					},
-					i = {
-						o = "Inside block/cond/loop",
-						f = "Inside function",
-						c = "Inside class",
-						t = "Inside tag",
-						d = "Inside digit",
-						e = "Inside word (case)",
-						u = "Inside function arg",
-						U = "Inside function arg (strict)",
-					},
+					{ "aU", desc = "Around function arg (strict)" },
+					{ "ac", desc = "Around class" },
+					{ "ad", desc = "Around digit" },
+					{ "ae", desc = "Around word (case)" },
+					{ "af", desc = "Around function" },
+					{ "ao", desc = "Around block/cond/loop" },
+					{ "at", desc = "Around tag" },
+					{ "au", desc = "Around function arg" },
+					{ "iU", desc = "Inside function arg (strict)" },
+					{ "ic", desc = "Inside class" },
+					{ "id", desc = "Inside digit" },
+					{ "ie", desc = "Inside word (case)" },
+					{ "if", desc = "Inside function" },
+					{ "io", desc = "Inside block/cond/loop" },
+					{ "it", desc = "Inside tag" },
+					{ "iu", desc = "Inside function arg" },
 				})
 			end
 		end,

@@ -1,75 +1,107 @@
 return {
+	-- Installer
 	{
 		"williamboman/mason.nvim",
 		lazy = false,
-		config = function()
-			require("mason").setup()
-		end,
+		opts = {},
 	},
+
+	-- Bridge Mason <-> lspconfig (install helpers, :LspInstall, etc.)
 	{
 		"williamboman/mason-lspconfig.nvim",
 		lazy = false,
-		ensure_installed = {
-			"tsserver",
-			"eslint",
-			"gopls",
-			"pyright",
-			"tailwindcss",
-		},
+		dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
 		opts = {
-			auto_install = true,
+			ensure_installed = {
+				"ts_ls", -- NOTE: was "tsserver"
+				"eslint",
+				"gopls",
+				"pyright",
+				"tailwindcss",
+				"lua_ls",
+				"html",
+			},
+			automatic_enable = false, -- we enable servers manually via vim.lsp.enable(...)
 		},
 	},
+
+	-- LSP configs (native API)
 	{
 		"neovim/nvim-lspconfig",
 		lazy = false,
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			local on_attach = require("cmp_nvim_lsp").on_attach
-			local lspconfig = require("lspconfig")
 
-			-- Updated tsserver setup
-			lspconfig.tsserver.setup({
-				-- Ensure that tsserver only starts once per project by setting root_dir
-				root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+			-- Defaults for all servers (can be overridden per server)
+			vim.lsp.config("*", {
 				capabilities = capabilities,
-				on_attach = function(client)
-					-- Disable formatting in tsserver if you're using another formatter (e.g., Prettier)
+				root_markers = { ".git" },
+			})
+
+			-- TypeScript / JavaScript
+			vim.lsp.config("ts_ls", {
+				root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+				on_attach = function(client, _)
+					-- let prettier/conform handle formatting
 					client.server_capabilities.documentFormattingProvider = false
 				end,
 			})
 
-			lspconfig.html.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-			lspconfig.lua_ls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-			lspconfig.pyright.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-			lspconfig.gopls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-			})
-			lspconfig.tailwindcss.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
+			-- HTML
+			vim.lsp.config("html", {})
+
+			-- Lua
+			vim.lsp.config("lua_ls", {
+				settings = {
+					Lua = {
+						diagnostics = { globals = { "vim" } },
+						workspace = { checkThirdParty = false },
+					},
+				},
 			})
 
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
-			vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
-			vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
-			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
-			vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action, {})
-			vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, {})
-			vim.keymap.set("n", "<leader>vd", vim.diagnostic.open_float, {})
-			vim.keymap.set("n", "<leader>vrr", vim.lsp.buf.references, {})
-			vim.keymap.set("n", "<leader>vh", vim.lsp.buf.signature_help, {})
+			-- Python
+			vim.lsp.config("pyright", {})
+
+			-- Go
+			vim.lsp.config("gopls", {
+				settings = {
+					gopls = {
+						usePlaceholders = true,
+						analyses = { unusedparams = true },
+					},
+				},
+			})
+
+			-- TailwindCSS
+			vim.lsp.config("tailwindcss", {})
+
+			-- ESLint
+			vim.lsp.config("eslint", {})
+
+			-- Enable all configured servers
+			vim.lsp.enable({ "ts_ls", "html", "lua_ls", "pyright", "gopls", "tailwindcss", "eslint" })
+
+			-- Buffer-local keymaps on LSP attach
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = vim.api.nvim_create_augroup("my_lsp_keys", { clear = true }),
+				callback = function(args)
+					local buf = args.buf
+					local map = function(mode, lhs, rhs)
+						vim.keymap.set(mode, lhs, rhs, { buffer = buf, silent = true })
+					end
+
+					map("n", "K", vim.lsp.buf.hover)
+					map("n", "gd", vim.lsp.buf.definition)
+					map("n", "gr", vim.lsp.buf.references)
+					map("n", "<leader>rn", vim.lsp.buf.rename)
+					map("n", "<leader>vca", vim.lsp.buf.code_action)
+					map("n", "<leader>vws", vim.lsp.buf.workspace_symbol)
+					map("n", "<leader>vd", vim.diagnostic.open_float)
+					map("n", "<leader>vrr", vim.lsp.buf.references)
+					map("n", "<leader>vh", vim.lsp.buf.signature_help)
+				end,
+			})
 		end,
 	},
 }
